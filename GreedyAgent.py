@@ -49,4 +49,6 @@ class GreedyAgent:
             self.__updateRanks()
             self.__updateHistory(cycleTestCases)
 
+        self.__updateRanks()
+
         print("Operation finished ;)")
