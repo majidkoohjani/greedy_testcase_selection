@@ -1,5 +1,7 @@
 from pandas import DataFrame
 from itertools import islice
+import time
+import calendar
 
 class Helper:
     @staticmethod
@@ -18,3 +20,10 @@ class Helper:
     @staticmethod
     def takeFirstNFromDict(n: int, values: dict) -> dict:
         return dict(islice(values.items(), n))
+    
+    @staticmethod
+    def getTimeStamp() -> str:
+        currentGMT = time.gmtime()
+        timestamp = calendar.timegm(currentGMT)
+        
+        return str(timestamp)

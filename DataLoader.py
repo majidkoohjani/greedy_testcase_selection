@@ -1,5 +1,7 @@
 import os
+import json
 import pandas
+from Helper import Helper
 
 class DataLoader:
     __experimentsBaseFolder = "./experiments"
@@ -50,12 +52,25 @@ class DataLoader:
 
         return dataFrame
     
-    def getReadyData(self):
+    def __getFinalPathForResults(self) -> str:
         finalOutputPath = f"{self.__experimentsBaseFolder}/{self.__getDatasetName(self.__DATASET)}"
 
         self.__checkOrCreatePath(finalOutputPath)
-        
+
+        return finalOutputPath
+    
+    def getReadyData(self):
+        self.__getFinalPathForResults()
         return self.__loadAndPreprocessData(self.__DATASET)
     
     def publicGetDatasetName(self) -> str:
         return self.__getDatasetName(self.__DATASET)
+    
+    def saveResultsAsJson(self, data, fileName: str = "") -> None:
+        if fileName == "":
+            fileName = Helper.getTimeStamp()
+        
+        path = f"{self.__getFinalPathForResults()}/{fileName}.json"
+
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
