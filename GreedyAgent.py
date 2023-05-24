@@ -12,6 +12,7 @@ class GreedyAgent:
         self.__truePositives: dict = {}
         self.__ratio: list = []
         self.__failsToAllRatio: list = []
+        self.__recommendsToCycleTestCases: list = []
         self.__warmup: int = warmup
 
     # Private functions
@@ -56,8 +57,11 @@ class GreedyAgent:
                 }
             })
 
-    def __setRatio(self, cycleID: int, precision: float = 0.0) -> None:
-        self.__ratio.append((cycleID, precision))
+    def __setRatio(self, cycleID: int, ratio: float = 0.0) -> None:
+        self.__ratio.append((cycleID, ratio))
+
+    def __setRecommendsToCycleTestCases(self, cycleID: int, ratio: float = 0.0) -> None:
+        self.__recommendsToCycleTestCases.append((cycleID, ratio))
 
     def __setRecommendations(self, cycleID: int) -> None:
         topN: dict = Helper.takeNTopRanksFromDict(self.__testCasesRank)
@@ -72,7 +76,7 @@ class GreedyAgent:
         ourRecommendation = set(str(x) for x in self.__recommendation[currentCycleID].keys())
 
         matched = list(realFailedTestCases.intersection(ourRecommendation))
-        precision = 0
+        precision: float = 0
         
         if len(matched) > 0:
             precision = float("%.3f" % (len(matched) / len(realFailedTestCases)))
@@ -84,6 +88,18 @@ class GreedyAgent:
         
         self.__setRatio(currentCycleID, precision)
 
+    def __recommendsToCycleTestCasesRatio(self, currentCycleID: int, cycleTestCases: set) -> None:
+        cycleTestCases = set(str(x) for x in cycleTestCases)
+        ourRecommendation = set(str(x) for x in self.__recommendation[currentCycleID].keys())
+
+        matched = list(cycleTestCases.intersection(ourRecommendation))
+        result: float = 0
+        
+        if len(matched) > 0:
+            result = float("%.3f" % (len(matched) / len(cycleTestCases)))
+
+        self.__setRecommendsToCycleTestCases(currentCycleID, result)
+
     def __setFailsToAllRatio(self, cycleID: int, ratio: float = 0.0) -> None:
         self.__failsToAllRatio.append((cycleID, ratio))
 
@@ -93,6 +109,9 @@ class GreedyAgent:
     
     def getFailsToAllRatio(self) -> list:
         return self.__failsToAllRatio
+    
+    def getRecommendsToCycleTestCases(self) -> list:
+        return self.__recommendsToCycleTestCases
     
     def getRecommendations(self) -> dict:
         return self.__recommendation 
@@ -114,11 +133,14 @@ class GreedyAgent:
             allTestCases = set(cycleTestCases["Name"].values.tolist())
 
             self.__setFailsToAllRatio(cycleID=cycle, ratio=float("%.2f" % (len(failedTestCases) / len(allTestCases))))
+
             if self.__updateRanks(currentCycle=cycle):
                 self.__setTruePositives(currentCycleID=cycle, realFailedTestCases=failedTestCases)
+                self.__recommendsToCycleTestCasesRatio(currentCycleID=cycle, cycleTestCases=allTestCases)
             self.__updateHistory(cycleTestCases)
 
         if self.__updateRanks(currentCycle=self.__cycles[-1]):
             self.__setTruePositives(currentCycleID=self.__cycles[-1], realFailedTestCases=failedTestCases)
+            self.__recommendsToCycleTestCasesRatio(currentCycleID=self.__cycles[-1], cycleTestCases=allTestCases)
 
         print("Operation finished successfully ;)")

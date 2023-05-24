@@ -18,11 +18,11 @@ if __name__ == "__main__":
     # * Greedy agent
     agent = GreedyAgent(cyclesList=cycleIDs, testCases=loadedDataset)
     agent.run()
-    results = agent.getRecommendations()
-    tp = agent.getTruePositives()
+    # results = agent.getRecommendations()
+    # tp = agent.getTruePositives()
 
-    dataLoader.saveResultsAsJson(results, "recommendations")
-    dataLoader.saveResultsAsJson(tp, "tp")
+    # dataLoader.saveResultsAsJson(results, "recommendations")
+    # dataLoader.saveResultsAsJson(tp, "tp")
 
     ratio: list = agent.getRatio()
     ratioX: list = [x for x, y in ratio]
@@ -32,11 +32,43 @@ if __name__ == "__main__":
     failedToAllRatioX: list = [x for x, y in failedToAllRatio]
     failedToAllRatioY: list = [y for x, y in failedToAllRatio]
 
+    recommendsToCycleTestCases: list = agent.getRecommendsToCycleTestCases()
+    recommendsToCycleTestCasesX: list = [x for x, y in recommendsToCycleTestCases]
+    recommendsToCycleTestCasesY: list = [y for x, y in recommendsToCycleTestCases]
+
     # * Plotting
     dataToBePlotted: list = [
-        {"x": ratioX, "y": ratioY, "title": "Recommends/realFails ratio", "xLabel": "Cycles", "yLabel": "recommends/realFails", "color": "red", "ls": "solid", "lw": 1},
-        {"x": failedToAllRatioX, "y": failedToAllRatioY, "title": "fails/all in each cycle", "xLabel": "Cycles", "yLabel": "fails/all", "color": "blue", "ls": "dotted", "lw": 1},
+        {
+            "x": ratioX, 
+            "y": ratioY, 
+            "title": "Recommends/realFails ratio", 
+            "xLabel": "Cycles", 
+            "yLabel": "recommends/realFails", 
+            "color": "red", 
+            "ls": "solid", 
+            "lw": 1
+        },
+        {
+            "x": failedToAllRatioX, 
+            "y": failedToAllRatioY, 
+            "title": "fails/all in each cycle", 
+            "xLabel": "Cycles", 
+            "yLabel": "fails/all", 
+            "color": "blue", 
+            "ls": "dotted", 
+            "lw": 1
+        },
+        {
+            "x": recommendsToCycleTestCasesX, 
+            "y": recommendsToCycleTestCasesY, 
+            "title": "recommends with cycle`s Test cases/cycle`s Test cases in each cycle", 
+            "xLabel": "Cycles", 
+            "yLabel": "ratio", 
+            "color": "orange", 
+            "ls": "dashed", 
+            "lw": 1
+        },
     ]
 
-    # Plotter.plot(multiLinePlot=dataToBePlotted, title="recommended/Real fails ratio", xLabel="CycleID", yLabel="Ratio")
-    Plotter.plotInMultiPlot(multiPlot=dataToBePlotted)
+    Plotter.plotLine(multiLinePlot=dataToBePlotted, title="Ratio", xLabel="Cycles", yLabel="Ratio")
+    Plotter.plotSubplot(multiPlot=dataToBePlotted)
