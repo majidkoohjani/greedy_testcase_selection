@@ -22,6 +22,16 @@ class Helper:
         return dict(islice(values.items(), n))
     
     @staticmethod
+    def takeNTopRanksFromDict(values: dict) -> dict:
+        result: dict = {}
+
+        for item in values:
+            if float(values[item]) >= 1:
+                result[item] = values[item]
+
+        return result
+    
+    @staticmethod
     def getTimeStamp() -> str:
         currentGMT = time.gmtime()
         timestamp = calendar.timegm(currentGMT)
