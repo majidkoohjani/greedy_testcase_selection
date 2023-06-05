@@ -8,6 +8,7 @@ class DataLoader:
 
     def __init__(self) -> None:
         self.__DATASET = "./datasets/iofrol-additional-features.csv"
+        # self.__DATASET = "./datasets/paintcontrol-additional-features.csv"
     
     # Just used whenever we wanna check for a folder and create it if not exists
     def __checkOrCreatePath(self, pathToCheck: str = ""):

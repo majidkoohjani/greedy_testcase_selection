@@ -29,6 +29,9 @@ class Helper:
             if float(values[item]) >= 1:
                 result[item] = values[item]
 
+        # for item in values:
+        #     result[item] = values[item]
+
         return result
     
     @staticmethod
