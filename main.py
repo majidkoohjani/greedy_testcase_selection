@@ -19,17 +19,17 @@ if __name__ == "__main__":
     # * Greedy agent
     agent = GreedyAgent(cyclesList=cycleIDs, testCases=loadedDataset, warmup=10)
     agent.run()
-    # results = agent.getRecommendations()
-    # tp = agent.getTruePositives()
-    # recommendsToCycle = agent.getRecommendsToCycleTestCases()
-    # finalRecommends = agent.getRecommendationFinal()
+    results = agent.getRecommendations()
+    tp = agent.getTruePositives()
+    recommendsToCycle = agent.getRecommendsToCycleTestCases()
+    finalRecommends = agent.getRecommendationFinal()
     apfds = agent.getAPFDs()
     totalAPFD = float("%.3f" % statistics.mean(apfds))
 
-    # dataLoader.saveResultsAsJson(results, "recommendations")
-    # dataLoader.saveResultsAsJson(tp, "tp")
-    # dataLoader.saveResultsAsJson(recommendsToCycle, "rtc")
-    # dataLoader.saveResultsAsJson(finalRecommends, "final")
+    dataLoader.saveResultsAsJson(results, "recommendations")
+    dataLoader.saveResultsAsJson(tp, "tp")
+    dataLoader.saveResultsAsJson(recommendsToCycle, "rtc")
+    dataLoader.saveResultsAsJson(finalRecommends, "final")
 
     print("---------- Mean of APFD ----------")
     print(totalAPFD)
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # recommendsToCycleTestCasesX: list = [x for x, y in recommendsToCycleTestCases]
     # recommendsToCycleTestCasesY: list = [y for x, y in recommendsToCycleTestCases]
 
-    # * Plotting
+    # # * Plotting
     # dataToBePlotted: list = [
     #     {
     #         "x": ratioX, 
